@@ -1,0 +1,10 @@
+[gd_resource type="DynamicFont" load_steps=2 format=2]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://Resources/User Interface/Art/kenvector_future.ttf"
+
+[resource]
+size = 23
+outline_size = 1
+outline_color = Color( 0, 0, 0, 0.313726 )
+font_data = SubResource( 1 )
