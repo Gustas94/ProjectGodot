@@ -17,7 +17,8 @@ func _ready():
 func _physics_process(_delta):
 	if enemy_array.size() != 0 and built:
 		select_enemy()
-		turn()
+		if category in ["Projectile", "Missile"]:
+			turn()
 		if ready:
 			fire()
 	else: 
@@ -39,12 +40,15 @@ func fire():
 	ready = false
 	if category == "Projectile":
 		fire_gun()
-	if category == "Missile":
+	elif category == "Missile":
 		fire_missile()
+	elif category == "AOE":
+		fire_aoe()
 	var damage = GameData.tower_data[type]["damage"]
 	var speed_damage = GameData.tower_data[type]["speedDamage"]
 	var slow_duration = GameData.tower_data[type]["slowDuration"]
-	enemy.on_hit(damage, speed_damage, slow_duration)  # Call on_hit on the enemy instance directly
+	if enemy:
+		enemy.on_hit(damage, speed_damage, slow_duration)  # Call on_hit on the enemy instance directly
 	yield(get_tree().create_timer(GameData.tower_data[type]["rof"]), "timeout")
 	ready = true
 	
@@ -52,6 +56,13 @@ func fire_gun():
 	get_node("AnimationPlayer").play("Fire")
 func fire_missile():
 	pass
+	
+func fire_aoe():
+	for e in enemy_array:
+		var damage = GameData.tower_data[type]["damage"]
+		var speed_damage = GameData.tower_data[type]["speedDamage"]
+		var slow_duration = GameData.tower_data[type]["slowDuration"]
+		e.on_hit(damage, speed_damage, slow_duration)
 	
 func remove_enemy(enemy):
 	enemy_array.erase(enemy)

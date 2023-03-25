@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Resources/User Interface/Art/Kenney Future_Small.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scenes/MainScenes/GameScene.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/MainScenes/UserInterface.gd" type="Script" id=3]
+[ext_resource path="res://assets/Enemy sprites/hacker.png" type="Texture" id=4]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile228.png" type="Texture" id=5]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile180.png" type="Texture" id=6]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile249.png" type="Texture" id=7]
@@ -94,7 +95,7 @@ margin_right = 13.0
 texture = ExtResource( 8 )
 expand = true
 
-[node name="Dog" type="TextureButton" parent="UserInterface/HUD/MenuBar/BuildBar/Gun+missile" groups=["build_buttons"]]
+[node name="Hacker" type="TextureButton" parent="UserInterface/HUD/MenuBar/BuildBar/Gun+missile" groups=["build_buttons"]]
 margin_left = 10.0
 margin_top = 168.0
 margin_right = 90.0
@@ -103,18 +104,10 @@ rect_min_size = Vector2( 80, 80 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Base" type="TextureRect" parent="UserInterface/HUD/MenuBar/BuildBar/Gun+missile/Dog"]
+[node name="Hack" type="TextureRect" parent="UserInterface/HUD/MenuBar/BuildBar/Gun+missile/Hacker"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-texture = ExtResource( 6 )
-expand = true
-
-[node name="Missle" type="TextureRect" parent="UserInterface/HUD/MenuBar/BuildBar/Gun+missile/Dog"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 13.0
-margin_right = 13.0
-texture = ExtResource( 8 )
+texture = ExtResource( 4 )
 expand = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="UserInterface/HUD/MenuBar/BuildBar"]

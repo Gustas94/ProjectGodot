@@ -4,8 +4,11 @@ var speed = GameData.enemy_data["Book"]["speed"]
 var hp = GameData.enemy_data["Book"]["hp"]
 var reward = GameData.enemy_data["Book"]["reward"]
 var OriginalSpeed = GameData.enemy_data["Book"]["speed"]
+var hp_on_death = GameData.enemy_data["Book"]["death_hp"]
 var slow_effect_active = false
 var slow_timer = null
+
+signal enemy_removed
 
 func _ready():
 	set_offset(0)
@@ -22,7 +25,7 @@ func check_if_left_path():
 	var path_length = path.curve.get_baked_length()
 	if get_offset() >= path_length:
 		print("Enemy has left the map")
-		on_left_map()
+		remove_from_game(true)
 
 func on_hit(damage, speedDamage, slowDuration):
 	hp -= damage
@@ -30,7 +33,7 @@ func on_hit(damage, speedDamage, slowDuration):
 		apply_slow_effect(speedDamage, slowDuration)
 	if hp <= 0:
 		get_money()
-		on_destroy()
+		remove_from_game()
 
 func apply_slow_effect(speedDamage, slowDuration):
 	slow_effect_active = true
@@ -46,16 +49,13 @@ func reset_speed(speedDamage):
 func speed_back():
 	speed = OriginalSpeed
 
-func on_destroy():
+func remove_from_game(left_map = false):
 	emit_signal("enemy_removed")
-	print("Health of book: ", hp)
+	print("Health of paper: ", hp)
+	if left_map:
+		GameData.Health -= hp_on_death
 	self.queue_free()
 
 func get_money():
 	GameData.Money = GameData.Money + reward
 	return GameData.Money
-
-func on_left_map():
-	GameData.Health = GameData.Health - 5
-	emit_signal("enemy_removed")
-	self.queue_free()

@@ -15,7 +15,6 @@ var wave_time = 3
 var enemies_remaining = 0
 signal wave_complete
 
-##var Money = GameData.Money
 ##
 ## seclection functions
 ##
@@ -23,7 +22,7 @@ func _ready():
 	map_node = get_node("Map1")
 	for index in get_tree().get_nodes_in_group("build_buttons"):
 		index.connect("pressed", self, "initiate_build_mode", [index.get_name()])
-	connect("wave_complete", self, "spawn_enemies")
+	connect("wave_complete", self, "start_next_wave")
 	start_next_wave()
 	show_money()
 
@@ -46,7 +45,7 @@ func _unhandled_input(event):
 ## Wave functions
 ##
 func start_next_wave():
-	yield(get_tree().create_timer(wave_time),"timeout")
+	yield(get_tree().create_timer(wave_time), "timeout")
 	var wave_data = retrieve_wave_data()
 	spawn_enemies(wave_data)
 	print(current_wave)
@@ -54,13 +53,13 @@ func start_next_wave():
 func retrieve_wave_data():
 	current_wave += 1
 	if current_wave == 1:
-		wave_data = [["Paper", 0.1]]
+		wave_data = [["Paper", 0.1],["Book", 0.1],["Book", 0.1],["Book", 0.1]]
 	if current_wave == 2:
 		wave_data = [["Paper", 0.7], ["Paper", 0.1],["Book", 0.1],["Book", 0.1],["Book", 0.1]]
 	if current_wave == 3:
-		wave_data = [["Paper", 0.7]]
+		wave_data = [["Paper", 0.7],["Book", 0.1]]
 	if current_wave == 4:
-		wave_data = [["Paper", 0.7]]
+		wave_data = [["Book", 0.1],["Paper", 0.7]]
 	return wave_data
 		
 func spawn_enemies(wave_data):
