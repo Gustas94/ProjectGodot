@@ -1,9 +1,21 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Scenes/Towers/GunT1.gd" type="Script" id=1]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile228.png" type="Texture" id=2]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile249.png" type="Texture" id=3]
 [ext_resource path="res://assets/Effects/towerDefense_tile297.png" type="Texture" id=4]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends \"res://Scenes/Towers/Towers.gd\"
+
+
+
+
+
+
+
+
+
+"
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.0
@@ -26,12 +38,13 @@ tracks/0/keys = {
 }
 
 [node name="GunT1" type="Node2D"]
-script = ExtResource( 1 )
+script = SubResource( 3 )
 
 [node name="Base" type="Sprite" parent="."]
 texture = ExtResource( 2 )
 
 [node name="Turret" type="Sprite" parent="."]
+pause_mode = 1
 texture = ExtResource( 3 )
 offset = Vector2( 12, 0 )
 

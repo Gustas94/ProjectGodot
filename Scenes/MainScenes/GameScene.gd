@@ -15,8 +15,11 @@ var wave_time = 3
 var enemies_remaining = 0
 signal wave_complete
 var game_speed = 1
-var game_paused = false
-
+var wave_in_progress = false
+var wave_paused = false
+var starting_wave = false
+var pause_cooldown = false
+var wave_timer
 ##
 ## seclection functions
 ##
@@ -27,11 +30,13 @@ func _ready():
 	connect("wave_complete", self, "start_next_wave")
 	start_next_wave()
 	show_money()
+	show_wave()
 
 
 func _process(_delta):
 	show_money()
 	show_health()
+	show_wave()
 	if build_mode:
 		update_tower_preview()
 
@@ -47,41 +52,67 @@ func _unhandled_input(event):
 ## Wave functions
 ##
 func start_next_wave():
-	yield(get_tree().create_timer(wave_time), "timeout")
+	if starting_wave or wave_paused:
+		return
+
+	starting_wave = true
+	wave_in_progress = true
+	$WaveTimer.start(wave_time)
+	yield($WaveTimer, "timeout")
 	var wave_data = retrieve_wave_data()
 	spawn_enemies(wave_data)
 	print(current_wave)
+	starting_wave = false
+	
+func check_next_wave():
+	if not wave_paused and not wave_in_progress and enemies_remaining <= 0:
+		start_next_wave()
 	
 func retrieve_wave_data():
 	current_wave += 1
 	wave_data = []
-	var enemy_types = ["Computer", "Paper", "Book"]
+	var enemy_types = ["PDF", "Paper", "Book","Word","Winrar"]
 
 	# Modify these values to control the difficulty scaling
-	var base_enemies = 3
-	var additional_enemies_per_wave = 2
+	var base_enemies = 2
+	var additional_enemies_per_wave = 1
 
 	var total_enemies = base_enemies + additional_enemies_per_wave * (current_wave - 1)
 
 	for _i in range(total_enemies):
 		var random_enemy = enemy_types[randi() % enemy_types.size()]
-		var spawn_delay = rand_range(0.1, 0.7)  # Adjust spawn delay range as desired
+		var spawn_delay = rand_range(0.8, 1.6)  # Adjust spawn delay range as desired
 		wave_data.append([random_enemy, spawn_delay])
 
 	return wave_data
+
 		
 func spawn_enemies(wave_data):
-	for i in wave_data:
+	wave_in_progress = true
+	var spawn_index = 0
+	while spawn_index < wave_data.size():
+		if GameData.game_paused:
+			yield(get_tree().create_timer(0.1), "timeout")
+			continue
+		var i = wave_data[spawn_index]
 		var new_enemy = load("res://Scenes/Enemies/" + i[0] + ".tscn").instance()
+		new_enemy.hp = int(new_enemy.hp * (1 + current_wave * GameData.enemy_data[i[0]]["scaling"]))
+		new_enemy.speed = int(new_enemy.speed * (1 + current_wave * GameData.enemy_data[i[0]]["scaling"]))
 		map_node.get_node("Path").add_child(new_enemy, true)
 		new_enemy.connect("enemy_removed", self, "enemy_removed")
 		enemies_remaining += 1
 		yield(get_tree().create_timer(i[1]), "timeout")
+		spawn_index += 1
+		if GameData.game_paused:
+			yield(get_tree().create_timer(0.1), "timeout")
+			continue
+	wave_in_progress = false
 	
 func enemy_removed():
 	enemies_remaining -= 1
-	if enemies_remaining <= 0:
-		emit_signal("wave_complete")
+	print("Enemy removed. Remaining:", enemies_remaining)
+	if enemies_remaining <= 0 and not wave_in_progress and not wave_paused:
+		check_next_wave()
 ##
 ## build functions
 ##
@@ -132,14 +163,17 @@ func show_money():
 func show_health():
 	$UserInterface/HUD/InfoMenu/Health_counter.text = str("Health: ", GameData.Health)
 
-
+func show_wave():
+	$UserInterface/HUD/InfoMenu/Wave_counter.text = str("Wave: ", current_wave)
 
 func _on_Pause_pressed():
-	toggle_pause()
+	if not pause_cooldown:
+		toggle_pause()
 	
 func toggle_pause():
-	game_paused = not game_paused
-	if game_paused:
+	GameData.game_paused = not GameData.game_paused
+	wave_paused = GameData.game_paused
+	if GameData.game_paused:
 		$UserInterface/HUD/InfoMenu/Pause.text = "Resume"
 		pause_enemies(true)
 		pause_towers(true)
@@ -147,6 +181,7 @@ func toggle_pause():
 		$UserInterface/HUD/InfoMenu/Pause.text = "Pause"
 		pause_enemies(false)
 		pause_towers(false)
+		check_next_wave()
 
 func pause_enemies(pause):
 	for enemy in map_node.get_node("Path").get_children():

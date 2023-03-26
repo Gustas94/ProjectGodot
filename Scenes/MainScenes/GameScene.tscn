@@ -3,12 +3,15 @@
 [ext_resource path="res://Resources/User Interface/Art/Kenney Future_Small.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scenes/MainScenes/GameScene.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/MainScenes/UserInterface.gd" type="Script" id=3]
-[ext_resource path="res://assets/Enemy sprites/hacker.png" type="Texture" id=4]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile228.png" type="Texture" id=5]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile180.png" type="Texture" id=6]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile249.png" type="Texture" id=7]
 [ext_resource path="res://assets/Tower sprites/towerDefense_tile250.png" type="Texture" id=8]
 [ext_resource path="res://Scenes/Maps/Map1.tscn" type="PackedScene" id=9]
+
+[sub_resource type="StreamTexture" id=2]
+flags = 4
+load_path = "res://.import/hacker.png-554e4f9e7cc0f9770a5fbf8a76ca811a.stex"
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -109,7 +112,7 @@ size_flags_vertical = 4
 [node name="Hack" type="TextureRect" parent="UserInterface/HUD/MenuBar/BuildBar/Gun+missile/Hacker"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-texture = ExtResource( 4 )
+texture = SubResource( 2 )
 expand = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="UserInterface/HUD/MenuBar/BuildBar"]
@@ -143,6 +146,16 @@ text = "Money: "
 valign = 1
 uppercase = true
 
+[node name="Wave_counter" type="Label" parent="UserInterface/HUD/InfoMenu"]
+margin_left = 650.0
+margin_top = 7.0
+margin_right = 840.0
+margin_bottom = 34.0
+custom_fonts/font = SubResource( 1 )
+text = "Wave: "
+valign = 1
+uppercase = true
+
 [node name="Pause" type="Button" parent="UserInterface/HUD/InfoMenu"]
 pause_mode = 2
 margin_left = 937.0
@@ -158,6 +171,12 @@ margin_top = 9.0
 margin_right = 920.0
 margin_bottom = 29.0
 text = "Speed 5x"
+
+[node name="WaveTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="FireTimer" type="Timer" parent="."]
+one_shot = true
 
 [connection signal="pressed" from="UserInterface/HUD/InfoMenu/Pause" to="." method="_on_Pause_pressed"]
 [connection signal="pressed" from="UserInterface/HUD/InfoMenu/Speed5x" to="." method="_on_Speed5x_pressed"]

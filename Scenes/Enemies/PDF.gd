@@ -1,10 +1,10 @@
 extends PathFollow2D
 
-var speed = GameData.enemy_data["Computer"]["speed"]
-var hp = GameData.enemy_data["Computer"]["hp"]
-var reward = GameData.enemy_data["Computer"]["reward"]
-var OriginalSpeed = GameData.enemy_data["Computer"]["speed"]
-var hp_on_death = GameData.enemy_data["Computer"]["death_hp"]
+var speed = GameData.enemy_data["PDF"]["speed"]
+var hp = GameData.enemy_data["PDF"]["hp"]
+var reward = GameData.enemy_data["PDF"]["reward"]
+var OriginalSpeed = GameData.enemy_data["PDF"]["speed"]
+var hp_on_death = GameData.enemy_data["PDF"]["death_hp"]
 var slow_effect_active = false
 var slow_timer = null
 
@@ -14,6 +14,8 @@ func _ready():
 	set_offset(0)
 
 func _physics_process(delta):
+	if GameData.game_paused:
+		return
 	move(delta)
 	check_if_left_path()
 
@@ -24,7 +26,6 @@ func check_if_left_path():
 	var path = get_parent() # Get the Path2D node
 	var path_length = path.curve.get_baked_length()
 	if get_offset() >= path_length:
-		print("Enemy has left the map")
 		remove_from_game(true)
 
 func on_hit(damage, speedDamage, slowDuration):
@@ -47,11 +48,13 @@ func reset_speed(speedDamage):
 	slow_timer = null
 
 func speed_back():
+	if not is_instance_valid(self):
+		return
 	speed = OriginalSpeed
+
 
 func remove_from_game(left_map = false):
 	emit_signal("enemy_removed")
-	print("Health of paper: ", hp)
 	if left_map:
 		GameData.Health -= hp_on_death
 	self.queue_free()

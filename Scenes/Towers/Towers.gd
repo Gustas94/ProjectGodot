@@ -12,12 +12,15 @@ func _ready():
 	checkPR = 0
 	if built:
 		checkPR = 1
-		self.get_node("Range/CollisionShape2D").get_shape().radius = 0.5 * GameData.tower_data[type]["range"]	
-	
-func _physics_process(_delta):
+		self.get_node("Range/CollisionShape2D").get_shape().radius = 0.5 * GameData.tower_data[type]["range"]    
+
+func _process(delta):
 	if GameData.game_paused:
 		return
 
+	update_state()
+	
+func update_state():
 	if enemy_array.size() != 0 and built:
 		select_enemy()
 		if category in ["Projectile", "Missile"]:
@@ -26,7 +29,7 @@ func _physics_process(_delta):
 			fire()
 	else: 
 		enemy = null
-		
+
 func turn():
 	get_node("Turret").look_at(enemy.position)
 
@@ -40,6 +43,10 @@ func select_enemy():
 	
 	
 func fire():
+	print("Lol ",GameData.game_paused)
+	if GameData.game_paused:
+		return
+
 	ready = false
 	if category == "Projectile":
 		fire_gun()
@@ -51,8 +58,14 @@ func fire():
 	var speed_damage = GameData.tower_data[type]["speedDamage"]
 	var slow_duration = GameData.tower_data[type]["slowDuration"]
 	if enemy:
-		enemy.on_hit(damage, speed_damage, slow_duration) 
-	yield(get_tree().create_timer(GameData.tower_data[type]["rof"]), "timeout")
+		enemy.on_hit(damage, speed_damage, slow_duration)
+
+	var timer = get_tree().create_timer(GameData.tower_data[type]["rof"])
+	while timer.time_left > 0:
+		if GameData.game_paused:
+			yield(get_tree().create_timer(0.1), "timeout")
+		else:
+			yield(timer, "timeout")
 	ready = true
 	
 func fire_gun():
@@ -75,6 +88,6 @@ func _on_Range_body_entered(body):
 	print(enemy_array)
 
 func _on_Range_body_exited(body):
-	if checkPR == 1 and enemy != null:
-		enemy.speed_back()
+	if checkPR == 1 and body.get_parent() != null and is_instance_valid(body.get_parent()):
+		body.get_parent().speed_back()
 	enemy_array.erase(body.get_parent())

@@ -1,10 +1,10 @@
 extends PathFollow2D
 
-var speed = GameData.enemy_data["Book"]["speed"]
-var hp = GameData.enemy_data["Book"]["hp"]
-var reward = GameData.enemy_data["Book"]["reward"]
-var OriginalSpeed = GameData.enemy_data["Book"]["speed"]
-var hp_on_death = GameData.enemy_data["Book"]["death_hp"]
+var speed = GameData.enemy_data["Winrar"]["speed"]
+var hp = GameData.enemy_data["Winrar"]["hp"]
+var reward = GameData.enemy_data["Winrar"]["reward"]
+var OriginalSpeed = GameData.enemy_data["Winrar"]["speed"]
+var hp_on_death = GameData.enemy_data["Winrar"]["death_hp"]
 var slow_effect_active = false
 var slow_timer = null
 

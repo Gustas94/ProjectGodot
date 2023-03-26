@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Pdf.png-d52a3b151e1aff0ff8493fb400120336.stex"
+path="res://.import/word.png-a110a08c8d1bdbdc1e40ed050f2d3bce.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Enemy sprites/Pdf.png"
-dest_files=[ "res://.import/Pdf.png-d52a3b151e1aff0ff8493fb400120336.stex" ]
+source_file="res://assets/Enemy sprites/word.png"
+dest_files=[ "res://.import/word.png-a110a08c8d1bdbdc1e40ed050f2d3bce.stex" ]
 
 [params]
 
