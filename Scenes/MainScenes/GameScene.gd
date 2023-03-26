@@ -14,6 +14,7 @@ var wave_data
 var wave_time = 3
 var enemies_remaining = 0
 signal wave_complete
+signal wave_ended
 var game_speed = 1
 var wave_in_progress = false
 var wave_paused = false
@@ -25,6 +26,7 @@ var wave_timer
 ##
 func _ready():
 	map_node = get_node("Map1")
+	connect("wave_ended", self, "start_next_wave")
 	for index in get_tree().get_nodes_in_group("build_buttons"):
 		index.connect("pressed", self, "initiate_build_mode", [index.get_name()])
 	connect("wave_complete", self, "start_next_wave")
@@ -107,12 +109,13 @@ func spawn_enemies(wave_data):
 			yield(get_tree().create_timer(0.1), "timeout")
 			continue
 	wave_in_progress = false
+	check_next_wave()
 	
 func enemy_removed():
 	enemies_remaining -= 1
 	print("Enemy removed. Remaining:", enemies_remaining)
 	if enemies_remaining <= 0 and not wave_in_progress and not wave_paused:
-		check_next_wave()
+		emit_signal("wave_ended")
 ##
 ## build functions
 ##
@@ -206,6 +209,3 @@ func toggle_speed_up():
 		game_speed = 1
 		$UserInterface/HUD/InfoMenu/Speed5x.text = "Speed x5"
 	Engine.time_scale = game_speed
-
-
-
