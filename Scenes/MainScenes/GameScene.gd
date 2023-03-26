@@ -14,6 +14,8 @@ var wave_data
 var wave_time = 3
 var enemies_remaining = 0
 signal wave_complete
+var game_speed = 1
+var game_paused = false
 
 ##
 ## seclection functions
@@ -52,14 +54,20 @@ func start_next_wave():
 	
 func retrieve_wave_data():
 	current_wave += 1
-	if current_wave == 1:
-		wave_data = [["Paper", 0.1],["Book", 0.1],["Book", 0.1],["Book", 0.1]]
-	if current_wave == 2:
-		wave_data = [["Paper", 0.7], ["Paper", 0.1],["Book", 0.1],["Book", 0.1],["Book", 0.1]]
-	if current_wave == 3:
-		wave_data = [["Paper", 0.7],["Book", 0.1]]
-	if current_wave == 4:
-		wave_data = [["Book", 0.1],["Paper", 0.7]]
+	wave_data = []
+	var enemy_types = ["Computer", "Paper", "Book"]
+
+	# Modify these values to control the difficulty scaling
+	var base_enemies = 3
+	var additional_enemies_per_wave = 2
+
+	var total_enemies = base_enemies + additional_enemies_per_wave * (current_wave - 1)
+
+	for _i in range(total_enemies):
+		var random_enemy = enemy_types[randi() % enemy_types.size()]
+		var spawn_delay = rand_range(0.1, 0.7)  # Adjust spawn delay range as desired
+		wave_data.append([random_enemy, spawn_delay])
+
 	return wave_data
 		
 func spawn_enemies(wave_data):
@@ -123,4 +131,46 @@ func show_money():
 	
 func show_health():
 	$UserInterface/HUD/InfoMenu/Health_counter.text = str("Health: ", GameData.Health)
+
+
+
+func _on_Pause_pressed():
+	toggle_pause()
+	
+func toggle_pause():
+	game_paused = not game_paused
+	if game_paused:
+		$UserInterface/HUD/InfoMenu/Pause.text = "Resume"
+		pause_enemies(true)
+		pause_towers(true)
+	else:
+		$UserInterface/HUD/InfoMenu/Pause.text = "Pause"
+		pause_enemies(false)
+		pause_towers(false)
+
+func pause_enemies(pause):
+	for enemy in map_node.get_node("Path").get_children():
+		enemy.set_process(!pause)
+		enemy.set_physics_process(!pause)
+		
+func pause_towers(pause):
+	for tower in map_node.get_node("Towers").get_children():
+		tower.set_process(!pause)
+		tower.set_physics_process(!pause)
+		
+		
+func _on_Speed5x_pressed():
+	toggle_speed_up()
+	
+
+func toggle_speed_up():
+	if game_speed == 1:
+		game_speed = 5
+		$UserInterface/HUD/InfoMenu/Speed5x.text = "Speed x1"
+	else:
+		game_speed = 1
+		$UserInterface/HUD/InfoMenu/Speed5x.text = "Speed x5"
+	Engine.time_scale = game_speed
+
+
 

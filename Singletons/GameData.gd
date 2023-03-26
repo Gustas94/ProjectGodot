@@ -2,6 +2,7 @@ extends Node
 
 var Money = 150
 var Health = 100
+var game_paused = false
 
 var tower_data = {
 	"GunT1": { 
@@ -35,6 +36,11 @@ var enemy_data = {
 		"hp": 70,
 		"death_hp": 3,
 		"reward": 12},
+	"Computer": { 
+		"speed": 120,
+		"hp": 180,
+		"death_hp": 9,
+		"reward": 50},
 	"Book": {
 		"speed": 160,
 		"hp": 120,

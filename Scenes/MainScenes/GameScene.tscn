@@ -23,6 +23,7 @@ script = ExtResource( 2 )
 position = Vector2( 12, -1 )
 
 [node name="UserInterface" type="CanvasLayer" parent="."]
+pause_mode = 2
 script = ExtResource( 3 )
 
 [node name="HUD" type="Control" parent="UserInterface"]
@@ -33,12 +34,13 @@ mouse_filter = 2
 [node name="MenuBar" type="ColorRect" parent="UserInterface/HUD"]
 self_modulate = Color( 0, 0, 0, 0.411765 )
 margin_left = 905.0
-margin_top = 314.0
+margin_top = 317.0
 margin_right = 1025.0
-margin_bottom = 597.0
+margin_bottom = 600.0
 rect_min_size = Vector2( 0, 60 )
 
 [node name="BuildBar" type="VBoxContainer" parent="UserInterface/HUD/MenuBar"]
+pause_mode = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_top = -283.0
@@ -140,3 +142,22 @@ custom_fonts/font = SubResource( 1 )
 text = "Money: "
 valign = 1
 uppercase = true
+
+[node name="Pause" type="Button" parent="UserInterface/HUD/InfoMenu"]
+pause_mode = 2
+margin_left = 937.0
+margin_top = 9.0
+margin_right = 1007.0
+margin_bottom = 29.0
+text = "Pause"
+
+[node name="Speed5x" type="Button" parent="UserInterface/HUD/InfoMenu"]
+pause_mode = 2
+margin_left = 850.0
+margin_top = 9.0
+margin_right = 920.0
+margin_bottom = 29.0
+text = "Speed 5x"
+
+[connection signal="pressed" from="UserInterface/HUD/InfoMenu/Pause" to="." method="_on_Pause_pressed"]
+[connection signal="pressed" from="UserInterface/HUD/InfoMenu/Speed5x" to="." method="_on_Speed5x_pressed"]

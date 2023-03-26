@@ -15,6 +15,9 @@ func _ready():
 		self.get_node("Range/CollisionShape2D").get_shape().radius = 0.5 * GameData.tower_data[type]["range"]	
 	
 func _physics_process(_delta):
+	if GameData.game_paused:
+		return
+
 	if enemy_array.size() != 0 and built:
 		select_enemy()
 		if category in ["Projectile", "Missile"]:
@@ -48,7 +51,7 @@ func fire():
 	var speed_damage = GameData.tower_data[type]["speedDamage"]
 	var slow_duration = GameData.tower_data[type]["slowDuration"]
 	if enemy:
-		enemy.on_hit(damage, speed_damage, slow_duration)  # Call on_hit on the enemy instance directly
+		enemy.on_hit(damage, speed_damage, slow_duration) 
 	yield(get_tree().create_timer(GameData.tower_data[type]["rof"]), "timeout")
 	ready = true
 	
@@ -72,6 +75,6 @@ func _on_Range_body_entered(body):
 	print(enemy_array)
 
 func _on_Range_body_exited(body):
-	if checkPR == 1:
+	if checkPR == 1 and enemy != null:
 		enemy.speed_back()
 	enemy_array.erase(body.get_parent())

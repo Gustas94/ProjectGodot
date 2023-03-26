@@ -1,10 +1,10 @@
 extends PathFollow2D
 
-var speed = GameData.enemy_data["Paper"]["speed"]
-var hp = GameData.enemy_data["Paper"]["hp"]
-var reward = GameData.enemy_data["Paper"]["reward"]
-var OriginalSpeed = GameData.enemy_data["Paper"]["speed"]
-var hp_on_death = GameData.enemy_data["Paper"]["death_hp"]
+var speed = GameData.enemy_data["Computer"]["speed"]
+var hp = GameData.enemy_data["Computer"]["hp"]
+var reward = GameData.enemy_data["Computer"]["reward"]
+var OriginalSpeed = GameData.enemy_data["Computer"]["speed"]
+var hp_on_death = GameData.enemy_data["Computer"]["death_hp"]
 var slow_effect_active = false
 var slow_timer = null
 
@@ -21,7 +21,7 @@ func move(delta):
 	set_offset(get_offset() + speed * delta)
 
 func check_if_left_path():
-	var path = get_parent()
+	var path = get_parent() # Get the Path2D node
 	var path_length = path.curve.get_baked_length()
 	if get_offset() >= path_length:
 		print("Enemy has left the map")
